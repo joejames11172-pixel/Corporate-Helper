@@ -1,12 +1,9 @@
-2026-10-15 Corporate Helper browser JSON bridge
-READ: Joe authorized the Gemini chat JSON request/result bridge.
-ACKNOWLEDGE: implement explicit discovery, session authorization and correlated results; maintain Channels/Corporate Helper docs.
-INQUIRE: no design question blocks implementation; native browser installation and live Jack test remain.
-Alpine HTTPS live health: corporate-helper 0.2.0, certificate verification enabled.
-Installed helper tests: 16 passed, 0 failed, including HTTPS/SRP/browser RPC.
-Local extension tests: 5 passed; local helper registry tests: 3 passed.
-Extension: 0.3.0 preview, Gemini adapter only; eleven-site launcher retained.
-Deployment command exceeded Gateway 60-second limit; final receipt not returned. Reconciled via verified live health and installed tests instead of repeating the upgrade.
-LESSON_LEARNED: long deployment plus 50-second tests and Drive receipts exceeded tool limit; use asynchronous audited maintenance dispatch for future upgrades.
-Review: reject cross-session and unauthorized tab capture; bind chat grants to tab/origin/path; persist pending IDs before request; cached duplicate responses; never auto-retry uncertain operations. All relevant core tests pass. Native DOM adapters remain to verify.
-No Jack live round-trip or browser installation is claimed.
+# Automatic helper deployment — public status
+
+The master implementation is deployed. Boot startup and authenticated broker health were checked. The installed broker suite passed 18 tests. Native policy/queue/framing tests and extension automatic-access tests each passed nine tests locally.
+
+Only the master initiates authenticated helper connections, restricted to its actual local subnet. Non-masters listen and never dial another peer. The extension contacts its own native host, with On/Off and Settings as the primary controls. Repeated browser pairing fields were removed.
+
+Windows Server 2003 installation, DPAPI/task/firewall/native-host launch, reboot recovery and a live Gemini chat round-trip remain unverified. This is a development preview, not production acceptance.
+
+The personalized installer contains private machine enrollment. Download information, storage identifiers, package hashes and operation receipts remain in the authorized private documentation. No such private distribution details belong in this public repository.
