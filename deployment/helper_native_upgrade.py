@@ -3,12 +3,13 @@ import base64,datetime,gzip,hashlib,importlib.util,json,os,pathlib,pwd,shutil,ss
 STAGED=pathlib.Path('/opt/peostectica-projects/corporate-helper-native-package.b64')
 EXPECTED='4bf933fa02339e9ea20ec16bf8f953745f3b978f240ea01872e8f2c787d67e66'
 BASE=pathlib.Path('/opt/corporate-helper')
-DEST='1Q_HHMR9qTM164cfhoO81JdVhyC1-wNgE'
+DEST=os.environ.get('CORPORATE_HELPER_DISTRIBUTION_FOLDER','')
 def admin():
  p='/opt/peostectica-founder-admin/admin_helper.py';spec=importlib.util.spec_from_file_location('founder_admin',p);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 
 def launch():
  if os.geteuid()!=0:raise PermissionError('Founder administration required')
+ if not DEST:raise ValueError('Configure the private distribution folder in the trusted deployment environment')
  a=admin();a.trusted(pathlib.Path('/opt/peostectica-drive-runtime-candidate/helper_native_upgrade.py'))
  raw=gzip.decompress(base64.b64decode(STAGED.read_bytes(),validate=True))
  if hashlib.sha256(raw).hexdigest()!=EXPECTED:raise ValueError('Staged package mismatch')
