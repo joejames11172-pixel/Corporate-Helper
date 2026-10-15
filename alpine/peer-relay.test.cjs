@@ -1,0 +1,7 @@
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const {peerExchange}=require('./peer-relay.cjs');
+const fixture=()=>({sessions:new Map(),queue:new Map(),results:new Map(),now:()=>1000,cleanup(){},enqueue(sid,tabId){const id='a'.repeat(32);this.queue.set(id,{sid,id,tabId,op:'read'});return{id};}});
+const id='12345678-1234-4234-8234-123456789abc';
+const exchange=(b,requests=[],extra={})=>peerExchange(b,{peer_guid:id,enabled:true,tabs:[{id:7,origin:'https://gemini.google.com'}],requests,captures:[],...extra});
+test('native relay preserves request IDs and deduplicates captures',()=>{const b=fixture();const request={request_id:'b'.repeat(32),rpc:{jsonrpc:'2.0',id:'capture1',method:'tools/call',params:{name:'browser_request_snapshot',arguments:{tabId:7}}}};const one=exchange(b,[request]);const two=exchange(b,[request]);assert.deepEqual(one.results,two.results);assert.equal(b.queue.size,1);assert.equal(one.commands[0].tabId,7);assert.throws(()=>exchange(b,[{...request,rpc:{...request.rpc,id:'changed'}}]));});
+test('native relay isolates peers and off revokes tabs and commands',()=>{const b=fixture();exchange(b,[{request_id:'b'.repeat(32),rpc:{jsonrpc:'2.0',id:'x',method:'tools/call',params:{name:'browser_request_snapshot',arguments:{tabId:7}}}}]);const other=exchange(b,[],{peer_guid:'87654321-4321-4321-8321-cba987654321',captures:[{id:'a'.repeat(32),snapshot:{text:'wrong peer'}}]});assert.equal(b.results.size,0);assert.equal(other.commands.length,0);exchange(b,[],{enabled:false});assert.equal(b.queue.size,0);});
